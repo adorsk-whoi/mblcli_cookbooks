@@ -19,7 +19,20 @@
 # limitations under the License.
 #
 
-default[:djbdns][:tinydns_ipaddress]          = "127.0.0.1"
+def get_default_address
+  addresses = node[:network][:interfaces][node[:network][:default_interface].to_sym][:addresses]
+  addresses.each do |address, attributes|
+    attributes.each do |attribute, value|
+      return address if value == "inet"
+    end
+  end
+  raise "No inet family."
+end
+
+# default[:djbdns][:tinydns_ipaddress]          = "127.0.0.1"
+default_interface = node[:network][:default_interface]
+default[:djbdns][:tinydns_ipaddress]          = get_default_address
+
 default[:djbdns][:tinydns_internal_ipaddress] = "127.0.0.1"
 default[:djbdns][:public_dnscache_ipaddress]  = ipaddress
 default[:djbdns][:axfrdns_ipaddress]          = "127.0.0.1"
