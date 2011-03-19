@@ -22,7 +22,7 @@ include_recipe "graylog2::default"
 
 # Ensure bundler is available
 gem_package "bundler" do
-  version "1.0.3"  # Put in for our infrastructure requirements at MDSOL
+  # version "1.0.3"  # Put in for our infrastructure requirements at MDSOL #move to environment?
   action :install
 end
 
