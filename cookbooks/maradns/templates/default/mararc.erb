@@ -28,4 +28,7 @@ verbose_level = 1
 # The following line must be uncommented to enable recursive queries
 root_servers = {}
 
+#zone_transfer_acl = "<%= node[:maradns][:zone_transfer_acl] %>"
+#TODO - move to attributes / out of here..
+zone_transfer_acl = "128.128.164.254,128.128.172.155, 128.128.172.18"
 recursive_acl = "<%= node[:maradns][:recursive_acl] %>"
