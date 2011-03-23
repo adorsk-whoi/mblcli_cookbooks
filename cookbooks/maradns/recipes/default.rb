@@ -29,18 +29,6 @@ service "maradns" do
   )
 end
 
-service "zoneserver" do
-  action :disable
-  supports :restart => true
-end
-
-template "/etc/maradns/mararc" do
-  source "mararc.erb"
-  mode 0644
-  owner "root"
-  group "root"
-  notifies :restart, resources(:service => "maradns")
-end
 
 # be sure to create the db.domain template.
 template "/etc/maradns/db.#{node[:domain]}" do
