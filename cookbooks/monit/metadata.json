@@ -1,65 +1,65 @@
 {
-    "version": "0.5.0",
-    "providing": {
-    },
-    "attributes": {
-      "monit/poll_period": {
-        "required": "recommended",
-        "calculated": false,
-        "choice": [
+  "name": "monit",
+  "description": "Configures monit.  Originally based off the 37 Signals Cookbook.",
+  "long_description": "",
+  "maintainer": "Alex Soto",
+  "maintainer_email": "apsoto@gmail.com",
+  "license": "Apache 2.0",
+  "platforms": {
+  },
+  "dependencies": {
+  },
+  "recommendations": {
+  },
+  "suggestions": {
+  },
+  "conflicting": {
+  },
+  "providing": {
+  },
+  "replacing": {
+  },
+  "attributes": {
+    "monit/notify_email": {
+      "description": "The email address to send alerts to.",
+      "type": "string",
+      "required": "recommended",
+      "choice": [
 
-        ],
-        "type": "string",
-        "recipes": [
+      ],
+      "calculated": false,
+      "recipes": [
 
-        ],
-        "description": "How often to perform checks (in seconds)"
-      },
-      "monit/notify_email": {
-        "required": "recommended",
-        "calculated": false,
-        "choice": [
+      ]
+    },
+    "monit/poll_period": {
+      "description": "How often to perform checks (in seconds)",
+      "type": "string",
+      "required": "recommended",
+      "choice": [
 
-        ],
-        "type": "string",
-        "recipes": [
+      ],
+      "calculated": false,
+      "recipes": [
 
-        ],
-        "description": "The email address to send alerts to."
-      },
-      "monit/poll_start_delay": {
-        "required": "recommended",
-        "calculated": false,
-        "choice": [
+      ]
+    },
+    "monit/poll_start_delay": {
+      "description": "When monit first starts, how long to delay before it starts performing checks",
+      "type": "string",
+      "required": "recommended",
+      "choice": [
 
-        ],
-        "type": "string",
-        "recipes": [
+      ],
+      "calculated": false,
+      "recipes": [
 
-        ],
-        "description": "When monit first starts, how long to delay before it starts performing checks"
-      }
-    },
-    "maintainer": "Alex Soto",
-    "replacing": {
-    },
-    "dependencies": {
-    },
-    "maintainer_email": "apsoto@gmail.com",
-    "groupings": {
-    },
-    "recommendations": {
-    },
-    "license": "Apache 2.0",
-    "long_description": "",
-    "suggestions": {
-    },
-    "name": "monit",
-    "recipes": {
-    },
-    "conflicting": {
-    },
-    "platforms": {
-    },
-    "description": "Configures monit.  Originally based off the 37 Signals Cookbook."
-  }
+      ]
+    }
+  },
+  "groupings": {
+  },
+  "recipes": {
+  },
+  "version": "0.5.0"
+}
