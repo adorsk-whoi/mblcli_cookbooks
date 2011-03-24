@@ -1,9 +1,9 @@
 #
-# Author:: Seth Chisamore <schisamo@opscode.com>
+# Author::  Joshua Timberman (<joshua@opscode.com>)
 # Cookbook Name:: php
-# Resource:: pear_package
+# Recipe:: module_ldap
 #
-# Copyright:: 2011, Opscode, Inc <legal@opscode.com>
+# Copyright 2009, Opscode, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,11 +18,8 @@
 # limitations under the License.
 #
 
-actions :install, :upgrade, :remove, :purge
+pack = value_for_platform([ "centos", "redhat", "fedora", "suse" ] => {"default" => "php-ldap"}, "default" => "php5-ldap")
 
-attribute :package_name, :kind_of => String, :name_attribute => true
-attribute :version, :default => nil
-attribute :channel, :kind_of => String
-attribute :options, :kind_of => String
-attribute :directives, :kind_of => Hash, :default => {}
-attribute :preferred_state, :default => 'stable'
+package pack do
+  action :upgrade
+end

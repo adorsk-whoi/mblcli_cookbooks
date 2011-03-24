@@ -17,3 +17,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+
+packages = value_for_platform(["centos", "redhat", "fedora", "suse"] => {"default" => []}, "default" => %w{ php4 php4-mysql php4-ldap php4-gd })
+
+pacakges.each do |pkg|
+  package pkg do
+    action :upgrade
+  end
+end

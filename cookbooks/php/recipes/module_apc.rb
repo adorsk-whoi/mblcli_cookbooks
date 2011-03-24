@@ -1,7 +1,7 @@
 #
 # Author::  Joshua Timberman (<joshua@opscode.com>)
 # Cookbook Name:: php
-# Recipe:: default
+# Recipe:: module_apc
 #
 # Copyright 2009, Opscode, Inc.
 #
@@ -17,3 +17,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+
+pack = value_for_platform([ "centos", "redhat", "fedora", "suse" ] => {"default" => "php-pecl-apc"}, "default" => "php5-apc")
+
+if pack
+  package pack do
+    action :upgrade
+  end
+end

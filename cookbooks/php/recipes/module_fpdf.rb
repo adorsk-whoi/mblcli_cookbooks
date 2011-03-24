@@ -1,7 +1,7 @@
 #
 # Author::  Joshua Timberman (<joshua@opscode.com>)
 # Cookbook Name:: php
-# Recipe:: default
+# Recipe:: module_fpdf
 #
 # Copyright 2009, Opscode, Inc.
 #
@@ -17,3 +17,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+
+case node[:platform]
+  when "centos", "redhat", "fedora", "suse"
+    #placeholder modify when available
+  when "debian" "ubuntu"
+    package "php-fpdf" do
+      action :upgrade
+    end
+end

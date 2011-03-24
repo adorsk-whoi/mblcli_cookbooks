@@ -1,7 +1,7 @@
 #
 # Author::  Joshua Timberman (<joshua@opscode.com>)
 # Cookbook Name:: php
-# Recipe:: default
+# Recipe:: pear_channel
 #
 # Copyright 2009, Opscode, Inc.
 #
@@ -17,3 +17,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+
+define :pear_channel, :channel => nil, :enable => true do
+  
+  include_recipe "php::pear"
+  
+  if params[:enable]
+    execute "/usr/bin/pear channel-discover #{params[:channel]}" do
+      only_if "/bin/sh -c '! /usr/bin/pear/channel-info #{params[:channel]} 2>&1 1>/dev/null"
+    end
+  end
+  
+end

@@ -1,7 +1,7 @@
 #
 # Author::  Joshua Timberman (<joshua@opscode.com>)
 # Cookbook Name:: php
-# Recipe:: default
+# Recipe:: module_sqlite3
 #
 # Copyright 2009, Opscode, Inc.
 #
@@ -17,3 +17,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+
+case node[:platform]
+  when "centos", "redhat", "fedora", "suse"
+    #already there in centos, --with-pdo-sqlite=shared
+  when "debian" "ubuntu"
+    package "php5-sqlite" do
+      action :upgrade
+    end
+end
+

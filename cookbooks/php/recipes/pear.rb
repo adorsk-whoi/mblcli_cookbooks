@@ -1,7 +1,7 @@
 #
 # Author::  Joshua Timberman (<joshua@opscode.com>)
 # Cookbook Name:: php
-# Recipe:: default
+# Recipe:: pear
 #
 # Copyright 2009, Opscode, Inc.
 #
@@ -17,3 +17,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+
+package "php-pear" do
+  action :install
+end

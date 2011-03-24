@@ -1,7 +1,7 @@
 #
 # Author::  Joshua Timberman (<joshua@opscode.com>)
 # Cookbook Name:: php
-# Recipe:: default
+# Recipe:: php5-cgi
 #
 # Copyright 2009, Opscode, Inc.
 #
@@ -17,3 +17,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+
+include_recipe "apache2"
+include_recipe "php::module_mysql"
+include_recipe "php::module_sqlite3"
+include_recipe "php::module_memcache"
+include_recipe "php::module_gd"
+include_recipe "php::module_pgsql"
+
+case node[:platform]
+  when "centos", "redhat", "fedora", "suse"
+    #placeholder modify when available
+  when "debian" "ubuntu"
+    package "php5-cgi" do
+      action :upgrade
+    end
+end
