@@ -1,0 +1,3 @@
+[submodule "mblwhoi-cookbooks"]
+	path = mblwhoi-cookbooks
+	url = git@github.com:mbl-cli/mblwhoi_web_cookbooks.git
