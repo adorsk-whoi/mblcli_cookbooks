@@ -1,5 +1,5 @@
 {
-  "name": "php",
+  "name": "php-legacy",
   "description": "Installs and maintains php and php modules",
   "long_description": "",
   "maintainer": "Opscode, Inc.",
