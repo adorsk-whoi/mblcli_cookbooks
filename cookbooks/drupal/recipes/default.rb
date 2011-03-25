@@ -19,7 +19,7 @@
 #
 
 include_recipe "apache2"
-include_recipe %w{php::php5 php::module_mysql}
+include_recipe %w{php::mysql}
 include_recipe "mysql::server"
 Gem.clear_paths
 require 'mysql'
