@@ -30,11 +30,4 @@ template "/etc/maradns/mararc" do
   notifies :restart, resources(:service => "maradns")
 end
 
-# be sure to create the db.domain template.
-template "/etc/maradns/db.#{node[:domain]}" do
-  source "db.#{node[:domain]}.erb"
-  mode 0644
-  owner "root"
-  group "root"
-  notifies :restart, resources(:service => "maradns")
-end  
+#TODO fetch zone from primary
