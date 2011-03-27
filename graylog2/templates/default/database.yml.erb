@@ -7,6 +7,6 @@ production:
   reconnect: false
   database: graylog2_production
   pool: 5
-  username: root
-  password:
+  username: <%= node[:graylog2][:db_user] %>
+  password: <%= node[:graylog2][:db_pass] %>
 
