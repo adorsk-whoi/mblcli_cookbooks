@@ -1,5 +1,5 @@
 = DESCRIPTION:
-lipsync client/server configuration - http://github.com/fak3r/lipsync
+installs lipsync, a lightweight service that provides automated file synchronization between multiple hosts: http://github.com/fak3r/lipsync
 
 = REQUIREMENTS:
 

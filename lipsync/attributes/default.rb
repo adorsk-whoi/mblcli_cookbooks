@@ -1,5 +1,6 @@
 #global
 default[:lipsync][:version] = "current"
+default[:lipsync][:logfile] = "/var/log/lipsyncd.log"
 
 #local
 default[:lipsync][:local][:user] = "lipsync"

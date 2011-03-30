@@ -19,12 +19,16 @@
 
 
 #install lipsync
+#we could (should?) also just grab this from github repo
 cookbook_file "/usr/local/bin/lipsync" do
-  source "lipsync.default"
+  source "lipsync.bin.sh"
   owner "root"
   group "root"
-  mode 0644
+  mode 0755
 end
+
+#install docs from github repo
+
 
 # install lipsyncd conf from template
 template "/etc/lipsyncd" do
@@ -32,6 +36,13 @@ template "/etc/lipsyncd" do
   owner "root"
   group "root"
   mode 0644
+end
+
+#create log file
+template default[:lipsync][:logfile] do
+  owner "root"
+  group "root"
+  mode 644
 end
 
 # Install init.d script from template
