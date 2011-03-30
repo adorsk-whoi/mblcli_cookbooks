@@ -5,8 +5,8 @@
 # Copyright (c) 2011 Phil Cryer phil.cryer@gmail.com
 # Source https://github.com/philcryer/lipsync
  
-USER_NAME=<%= default[:lipsync][:local][:user] %>
-LOCAL_DIR=<%= default[:lipsync][:local][:directory] %>
-REMOTE_HOST=<%= default[:lipsync][:remote][:directory] %>
-REMOTE_DIR=<%= default[:lipsync][:remote][:host] %>
-SSH_PORT=<%= default[:lipsync][:remote][:port] %>
+USER_NAME=<%= node[:lipsync][:local][:user] %>
+LOCAL_DIR=<%= node[:lipsync][:local][:directory] %>
+REMOTE_HOST=<%= node[:lipsync][:remote][:directory] %>
+REMOTE_DIR=<%= node[:lipsync][:remote][:host] %>
+SSH_PORT=<%= node[:lipsync][:remote][:port] %>

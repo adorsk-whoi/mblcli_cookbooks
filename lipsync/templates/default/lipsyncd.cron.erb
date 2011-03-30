@@ -13,4 +13,4 @@ if [[ -e $CONF_FILE ]]; then
 fi
 
 # run lipsync against the server every 15 minutes to catch changes from other nodes
-15,30,45,00 * * * *     <%= default[:lipsync][:local][:user] %>	/usr/local/bin/lipsync
+15,30,45,00 * * * *     <%= node[:lipsync][:local][:user] %>	/usr/local/bin/lipsync

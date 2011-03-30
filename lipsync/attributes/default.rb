@@ -13,5 +13,8 @@ default[:lipsync][:remote][:host] = "127.0.0.1"
 default[:lipsync][:remote][:port] = "22"
 default[:lipsync][:remote][:directory] = '/sync'
 
+#lsyncd
+default[:lipsync][:lsyncd][:version] = "2.0.3"
+default[:lipsync][:lsyncd][:uri] = "http://lsyncd.googlecode.com/files/lsyncd-#{default[:lipsync][:lsyncd][:version]}.tar.gz"
 
 

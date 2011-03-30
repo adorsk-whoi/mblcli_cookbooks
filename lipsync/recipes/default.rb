@@ -17,6 +17,17 @@
 # limitations under the License.
 #
 
+#install base packages
+packages = value_for_platform(
+  "default" => %w{openssh-server rsync unison lsyncd}
+)
+packages.each do |pkg|
+  package pkg do
+    action :upgrade
+  end
+end
+
+
 
 #install lipsync
 #we could (should?) also just grab this from github repo
