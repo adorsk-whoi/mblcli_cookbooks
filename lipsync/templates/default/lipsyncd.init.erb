@@ -1,0 +1,102 @@
+#!/bin/sh -e
+# Distributed under the terms of the BSD License.
+# Copyright (c) 2011 Phil Cryer phil.cryer@gmail.com
+# Source https://github.com/philcryer/lipsync
+
+PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+
+### BEGIN INIT INFO
+# Provides:          lipsyncd
+# Required-Start:    $syslog $local_fs
+# Required-Stop:     $syslog $local_fs
+# Should-Start:      dbus avahi
+# Should-Stop:       dbus avahi
+# Default-Start:     2 3 4 5
+# Default-Stop:      1
+# Short-Description: a service that provides automated, command-line syncing
+### END INIT INFO
+
+DAEMON=/usr/local/bin/lipsyncd
+NAME=lipsyncd
+DESC="a service that provides command-line, automated syncing between systems"
+LOGFILE=/var/log/lipsyncd.log
+PIDFILE=/var/run/lipsyncd.pid
+LOGLEVEL=all
+DELAY_SEC=2
+
+CONF_FILE=/etc/lipsyncd
+
+test -x $DAEMON || exit 0
+
+# Include user lipsyncd details if available
+if [[ -e $CONF_FILE ]]; then
+        . $CONF_FILE
+fi
+
+RUN=yes
+RUN_AS_USER=$USER_NAME
+
+# Include lipsyncd defaults if available
+if [ -f /etc/default/lipsyncd ] ; then
+    . /etc/default/lipsyncd
+fi
+
+if [ "x$RUN" != "xyes" ] ; then
+    exit 0
+fi
+
+DAEMON_OPTS="-a $RUN_AS_USER"
+
+set -e
+
+case "$1" in
+  start)
+	echo -n "Starting $NAME daemon"
+#	start-stop-daemon --start --quiet --pidfile /var/run/$NAME.pid \
+#		--exec $DAEMON -- $DAEMON_OPTS
+	su $RUN_AS_USER -c "$DAEMON -log $LOGLEVEL -delay $DELAY_SEC -logfile $LOGFILE -pidfile $PIDFILE -rsyncssh $LOCAL_DIR $REMOTE_HOST $REMOTE_DIR"
+	echo "done"
+	echo `ps -fe | grep "/usr/local/bin/lsyncd" | grep -v grep | cut -d' ' -f7` > /var/run/$NAME.pid
+	echo "====== lipsyncd (pid `cat /var/run/$NAME.pid`) started on `date` =====" >> $LOGFILE
+	;;
+  stop)
+	echo -n "Stopping $NAME daemon"
+	#start-stop-daemon --stop --oknodo --quiet --pidfile /var/run/$NAME.pid \ --exec $DAEMON
+	`killall lsyncd`
+	rm /var/run/$NAME.pid
+	echo "====== lipsyncd stopped on `date` =====" >> $LOGFILE
+	echo "done"
+	;;
+  force-reload)
+	# check whether $DAEMON is running. If so, restart
+	start-stop-daemon --stop --test --quiet --pidfile \
+		/var/run/$NAME.pid --exec $DAEMON \
+	&& $0 restart \
+	|| exit 0
+	;;
+  restart)
+	echo -n "Restarting $DESC: "
+	start-stop-daemon --stop --quiet --pidfile \
+		/var/run/$NAME.pid --exec $DAEMON
+	sleep 1
+	start-stop-daemon --start --quiet --pidfile \
+		/var/run/$NAME.pid --exec $DAEMON -- $DAEMON_OPTS
+	echo "$NAME."
+	;;
+  status)
+	if [ -s /var/run/$NAME.pid ]; then
+        	echo "$NAME is running as PID `cat /var/run/$NAME.pid`."
+                exit 0
+        else
+           	echo "$NAME not running."
+           	exit 1
+        fi
+	;;
+  *)
+	N=/etc/init.d/$NAME
+	echo "Usage: $N {start|stop|restart|force-reload}" >&2
+	exit 1
+	;;
+esac
+
+exit 0

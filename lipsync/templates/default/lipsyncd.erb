@@ -1,0 +1,12 @@
+#configured by chef, local changes will be overwritten
+
+
+# Distributed under the terms of the BSD License.
+# Copyright (c) 2011 Phil Cryer phil.cryer@gmail.com
+# Source https://github.com/philcryer/lipsync
+ 
+USER_NAME=<%= default[:lipsync][:local][:user] %>
+LOCAL_DIR=<%= default[:lipsync][:local][:directory] %>
+REMOTE_HOST=<%= default[:lipsync][:remote][:directory] %>
+REMOTE_DIR=<%= default[:lipsync][:remote][:host] %>
+SSH_PORT=<%= default[:lipsync][:remote][:port] %>
