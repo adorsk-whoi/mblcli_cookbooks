@@ -22,7 +22,7 @@ include_recipe %w{php::mysql}
 
 remote_file "#{node[:drupal][:src]}/drush-6.x-#{node[:drupal][:drush][:version]}.tar.gz" do
   checksum node[:drupal][:drush][:checksum]
-  source "http://ftp.drupal.org/files/projects/drush-6.x-#{node[:drupal][:drush][:version]}.tar.gz"
+  source "#{node[:drupal][:drush][:base_url]}#{node[:drupal][:drush][:version]}.tar.gz"
   mode "0644"
 end
 
