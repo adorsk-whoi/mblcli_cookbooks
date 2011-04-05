@@ -1,0 +1,30 @@
+{
+  "name": "ohai-plugins",
+  "description": "Installs ohai plugins",
+  "long_description": "= DESCRIPTION:\n\n= REQUIREMENTS:\n\n= ATTRIBUTES:\n\n= USAGE:\n\n",
+  "maintainer": "Marine Biological Laboratory",
+  "maintainer_email": "agoddard@mbl.edu",
+  "license": "Apache 2.0",
+  "platforms": {
+  },
+  "dependencies": {
+  },
+  "recommendations": {
+  },
+  "suggestions": {
+  },
+  "conflicting": {
+  },
+  "providing": {
+  },
+  "replacing": {
+  },
+  "attributes": {
+  },
+  "groupings": {
+  },
+  "recipes": {
+    "ohai-plugins": "installs ohai plugins"
+  },
+  "version": "0.0.1"
+}
