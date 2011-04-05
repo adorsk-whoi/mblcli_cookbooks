@@ -19,8 +19,8 @@
 
 remote_directory "/etc/ohai/plugins" do
   source "plugins"
-  owner "chef"
-  group "chef"
+  owner "root"
+  group "root"
   mode 0755
   files_mode 0755
 end
