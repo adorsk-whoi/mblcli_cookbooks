@@ -1,3 +1,0 @@
-[submodule "ohai-plugins/files/plugins"]
-	path = ohai-plugins/files/plugins
-	url = https://github.com/agoddard/ohai-plugins
