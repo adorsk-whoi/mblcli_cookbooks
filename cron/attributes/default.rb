@@ -1,0 +1,8 @@
+default[:cron][:frequency] = ""
+default[:cron][:unit] = ""
+default[:cron][:time][:day] = ""
+default[:cron][:time][:hour] = ""
+default[:cron][:time][:minute] = ""
+default[:cron][:rake] = ""
+default[:cron][:runner] = ""
+default[:cron][:command] = ""

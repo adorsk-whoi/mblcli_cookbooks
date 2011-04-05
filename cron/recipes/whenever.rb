@@ -17,6 +17,12 @@
 # limitations under the License.
 #
 
-package "cron" do
-  action :upgrade
+gem_package "whenever" do
+  action :install
 end
+
+
+# #TODO build this from attributes
+# every 1.day, :at => '4:30 am' do
+#   command "echo yaya"
+# end
