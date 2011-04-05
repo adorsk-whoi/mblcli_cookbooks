@@ -22,7 +22,9 @@ gem_package "whenever" do
 end
 
 
-# #TODO build this from attributes
-# every 1.day, :at => '4:30 am' do
-#   command "echo yaya"
+# TODO permit :day, :week, :minute, :hour etc..
+# every [:node][:cron][:frequency].[:node][:cron][:unit], :at => "'#{[:cron][:time][:hour]}:#{[:cron][:time][:minute]}" do
+#   node[:cron][:rake] if node[:cron][:rake]
+#   node[:cron][:runner] if node[:cron][:runner]
+#   node[:cron][:command] if node[:cron][:command]
 # end
