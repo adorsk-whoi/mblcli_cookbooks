@@ -16,3 +16,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+
+template "/etc/nagios/nrpe.cfg" do
+  source "nrpe.cfg.erb"
+  owner "nagios"
+  group "nagios"
+  mode "0644"
+  variables :mon_host => mon_host
+  notifies :restart, resources(:service => "nagios-nrpe-server")
+end
