@@ -16,3 +16,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+
+remote_directory "/etc/ohai/plugins" do
+  source "plugins"
+  owner "chef"
+  group "chef"
+  mode 0755
+  files_mode 0755
+end
