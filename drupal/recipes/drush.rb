@@ -20,13 +20,16 @@
 
 include_recipe %w{php::mysql}
 
-remote_file "#{node[:drupal][:src]}/drush-6.x-#{node[:drupal][:drush][:version]}.tar.gz" do
-  checksum node[:drupal][:drush][:checksum]
-  source "#{node[:drupal][:drush][:base_url]}#{node[:drupal][:drush][:version]}.tar.gz"
+drush_file_url = "#{node[:drush][:base_url]}#{node[:drush][:version]}.tar.gz"
+local_drush_file = "/tmp/drush.tar.gz"
+
+remote_file "#{local_drush_file}" do
+  source drush_file_url
   mode "0644"
+  checksum node[:drush][:checksum]
 end
 
-directory "#{node[:drupal][:drush][:dir]}" do
+directory "#{node[:drush][:dir]}" do
   owner "root"
   group "root"
   mode "0755"
@@ -34,17 +37,17 @@ directory "#{node[:drupal][:drush][:dir]}" do
 end
 
 execute "untar-drush" do
-  cwd node[:drupal][:drush][:dir]
-  command "tar --strip-components 1 -xzf #{node[:drupal][:src]}/drush-6.x-#{node[:drupal][:drush][:version]}.tar.gz"
-  not_if "/usr/local/bin/drush status drush-version --pipe | grep #{node[:drupal][:drush][:version]}"
+  cwd node[:drush][:dir]
+  command "tar --strip-components 1 -xzf #{local_drush_file}"
+  not_if "/usr/local/bin/drush status drush-version --pipe | grep #{node[:drush][:version]}"
 end
 
 link "/usr/local/bin/drush" do
-  to "#{node[:drupal][:drush][:dir]}/drush"
+  to "#{node[:drush][:dir]}/drush"
 end
 
 execute "install-drush-make" do
-  cwd node[:drupal][:drush][:dir]
-  command "/usr/local/bin/drush dl drush_make"
+  cwd node[:drush][:dir]
+  command "/usr/local/bin/drush dl -y --destination=#{node[:drush][:dir]}/commands/drush_make drush_make-#{node[:drush][:drush_make][:version]}"
   not_if { File.directory?("/root/.drush/drush_make")}
 end
