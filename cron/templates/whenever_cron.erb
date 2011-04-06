@@ -1,7 +1,0 @@
-<% @cron_tasks.each do |cron| -%>
-  <%= "every #{[:node][:cron][:frequency]}.#{[:node][:cron][:unit]}, :at => '#{[:cron][:time][:hour]}:#{[:cron][:time][:minute]} do
-    #{node[:cron][:rake]}
-    #{node[:cron][:runner]}
-    #{node[:cron][:command]}
-  end" %>
-<% end -%>

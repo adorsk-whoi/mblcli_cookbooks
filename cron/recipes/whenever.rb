@@ -17,17 +17,35 @@
 # limitations under the License.
 #
 
+gem_package "i18n" do
+  action :install
+end
+
 gem_package "whenever" do
   action :install
 end
 
 
 
-template "/etc/cron.whenever/whenever.rb" do
-  source "whenever_cron.erb"
-  group "root"
+# Make sure cron directory exists
+directory "/etc/cron.whenever" do
   owner "root"
-  variables :cron_tasks => node[:cron]
-  mode 0644
-  # notifies :restart, resources(:service => "apache2")
+  group "root"
+  mode 0755
+  action :create
 end
+
+# not quite ready for primetime
+#TODO write user specific files
+# template "/etc/cron.whenever/#{----user---------}.rb" do
+#   source "whenever_cron.erb"
+#   group "root"
+#   owner "root"
+#   # variables :cron_tasks => node[:cron]
+#   mode 0644
+#   # notifies :restart, resources(:service => "apache2")
+# end
+
+
+#TODO
+# command: whenever -u @user -i -f whenever.rb
