@@ -48,6 +48,6 @@ end
 
 execute "install-drush-make" do
   cwd node[:drush][:dir]
-  command "/usr/local/bin/drush dl --destination=#{node[:drush][:dir]}/commands/drush_make drush_make-#{node[:drush][:drush_make][:version]}"
+  command "/usr/local/bin/drush dl -y --destination=#{node[:drush][:dir]}/commands/drush_make drush_make-#{node[:drush][:drush_make][:version]}"
   not_if { File.directory?("/root/.drush/drush_make")}
 end
