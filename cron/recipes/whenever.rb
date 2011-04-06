@@ -36,15 +36,15 @@ directory "/etc/cron.whenever" do
 end
 
 # not quite ready for primetime
-#TODO write user specific files
-# template "/etc/cron.whenever/#{----user---------}.rb" do
-#   source "whenever_cron.erb"
-#   group "root"
-#   owner "root"
-#   # variables :cron_tasks => node[:cron]
-#   mode 0644
-#   # notifies :restart, resources(:service => "apache2")
-# end
+# TODO write user specific files
+template "/etc/cron.whenever/whenever.rb" do
+  source "whenever_cron.erb"
+  group "root"
+  owner "root"
+  variables :cron => node[:cron]
+  mode 0644
+  # notifies :restart, resources(:service => "apache2")
+end
 
 
 #TODO

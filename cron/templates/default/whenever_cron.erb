@@ -1,3 +1,17 @@
-every 10.hour, :at => "0:0" do
-  command "echo yaya"
+<%- def sanitize_every(every)
+  every ||= @cron[:every] #sets every to default unless defined
+  
+  if every.include? " "
+    every.tr(' ', '.') #using . syntax like 2.days
+  else
+    %("#{every}") #return a quoted string like '"day"'
+  end
 end
+%>
+<%- @cron[:tasks].each do |task| %>
+every <%= sanitize_every(task[:every]) %><% if task[:at] %>, :at => '<%= task[:at] %>'<% end %> do
+  <%- if task[:command] %>
+    command %(<%= task[:command] %>)
+  <%- end %>
+end
+<%- end %>
