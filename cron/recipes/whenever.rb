@@ -22,9 +22,12 @@ gem_package "whenever" do
 end
 
 
-# TODO permit :day, :week, :minute, :hour etc..
-# every [:node][:cron][:frequency].[:node][:cron][:unit], :at => "'#{[:cron][:time][:hour]}:#{[:cron][:time][:minute]}" do
-#   node[:cron][:rake] if node[:cron][:rake]
-#   node[:cron][:runner] if node[:cron][:runner]
-#   node[:cron][:command] if node[:cron][:command]
-# end
+
+template "/etc/cron.whenever/whenever.rb" do
+  source "whenever_cron.erb"
+  group "root"
+  owner "root"
+  variables :cron_tasks => node[:cron]
+  mode 0644
+  # notifies :restart, resources(:service => "apache2")
+end
