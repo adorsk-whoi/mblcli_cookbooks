@@ -20,9 +20,11 @@
 
 include_recipe %w{php::mysql}
 
-remote_file "#{node[:drush][:base_ur]}/#{node[:drush][:version]}.tar.gz" do
+drush_file = "#{node[:drush][:base_url]}#{node[:drush][:version]}.tar.gz"
+
+remote_file "#{drush_file}" do
   checksum node[:drush][:checksum]
-  source "#{node[:drush][:base_url]}#{node[:drush][:version]}.tar.gz"
+  source "#{drush_file}"
   mode "0644"
 end
 
@@ -35,7 +37,7 @@ end
 
 execute "untar-drush" do
   cwd node[:drupal][:drush][:dir]
-  command "tar --strip-components 1 -xzf #{node[:drupal][:src]}/drush-6.x-#{node[:drupal][:drush][:version]}.tar.gz"
+  command "tar --strip-components 1 -xzf #{drush_file}"
   not_if "/usr/local/bin/drush status drush-version --pipe | grep #{node[:drupal][:drush][:version]}"
 end
 
