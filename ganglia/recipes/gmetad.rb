@@ -13,7 +13,7 @@ end
 
 directory "/var/lib/ganglia/rrds" do
   # centos was nobody
-  owner "www-data"
+  owner "ganglia"
   recursive true
 end
 
