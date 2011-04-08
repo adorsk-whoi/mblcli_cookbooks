@@ -12,7 +12,8 @@ when "redhat", "centos", "fedora"
 end
 
 directory "/var/lib/ganglia/rrds" do
-  owner "nobody"
+  # centos was nobody
+  owner "www-data"
   recursive true
 end
 
