@@ -13,3 +13,9 @@ LoadPlugin "<%= @name %>"
   <% end end %>
 </Plugin>
 <% end %>
+
+#testing for graphite
+<Plugin write_http>
+  <URL "http://monitor:3012/post-collectd">
+  </URL>
+</Plugin>
