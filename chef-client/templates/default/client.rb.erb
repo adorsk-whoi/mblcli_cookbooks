@@ -13,6 +13,9 @@ node_name "<%= @chef_node_name %>"
 # Using default node name"
 <% end -%>
 
+#load custom ohai plugins
+Ohai::Config[:plugin_path] << node["chef_client"]["ohai_plugin_path"]
+
 file_backup_path   "<%= node["chef_client"]["backup_path"] %>"
 file_cache_path    "<%= node["chef_client"]["cache_path"] %>"
 <% unless %w{ runit bluepill daemontools }.include?(node["chef_client"]["init_style"]) -%>

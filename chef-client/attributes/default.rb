@@ -22,6 +22,8 @@ default["chef_client"]["splay"]    = "20"
 default["chef_client"]["log_dir"]  = "/var/log/chef"
 default["chef_client"]["server_url"] = "http://localhost:4000"
 default["chef_client"]["validation_client_name"] = "chef-validator"
+default["chef_client"]["ohai_plugin_path"] = "/etc/ohai/plugins"
+
 
 case platform
 when "arch"
