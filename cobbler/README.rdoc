@@ -1,0 +1,45 @@
+= DESCRIPTION:
+
+Cobbler bootstrapping server
+
+= REQUIREMENTS:
+
+Developed and tested on Ubuntu.
+
+Red Hat/CentOS and Fedora can be used but will be converted to a Debian/Ubuntu style Apache as it's far easier to manage with chef. 
+
+= ATTRIBUTES:
+
+There are three settings right now, set in recipes/default.rb:
+
+server -> hostname of the cobbler server, defaults to the fqdn
+virt -> virt type, kvm, untested
+bridge -> default virt bridge interface, br0, untested
+
+= USAGE:
+
+Import Fedora by downloading the dvd, mounting it locally, e.g.
+
+sudo mkdir /tmp/F13
+sudo mount -o loop Fedora-13-x86_64-DVD.iso /tmp/F13
+sudo cobbler import --path=/srv/repo/F13 --name F13
+sudo cobbler system add--name=pxe.example.org --mac=52:54:00:AA:BB:CC --profile=F13-x86_64
+
+Configure your DHCP server to use your cobbler server as 'next-server' with a filename of '/pxelinux.0'
+
+= LICENSE & AUTHOR:
+
+Author:: Bryan McLellan <btm@loftninjas.org>
+Copyright:: 2010, Bryan McLellan
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
