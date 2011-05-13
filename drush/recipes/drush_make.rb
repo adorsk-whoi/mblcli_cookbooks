@@ -7,7 +7,7 @@
 # Set name of drush make to download, per attributes.
 drush_make_name = "drush_make"
 
-if node.attribute?("drush") && node.drush.attribute?("drush_make") && node.drush.drush_make.attribute("version")
+if node.attribute?("drush") && node.drush.attribute?("drush_make") && node.drush.drush_make.attribute?("version")
 
   drush_make_name += "-#{node[:drush][:drush_make][:version]}"
 
