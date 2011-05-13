@@ -1,0 +1,15 @@
+#created by chef, edits to this file will be lost
+
+<%= "#{@zone[:zone]}. SOA #{@zone[:SOA]} #{@zone[:email]} #{@zone[:serial]} #{@zone[:refresh]} #{@zone[:retry]} #{@zone[:expire]} #{@zone[:minimum]} ~ "%>
+
+<%- @zone[:ns].each do |ns| %>
+<%= "#{ns[:zone]} +600  ns  #{ns[:nameserver]}  ~" %>
+<%- end %>
+
+<%- @zone[:A].each do |name,ip| %>
+<%= "#{name}  #{ip} ~"%>
+<%- end %>
+
+<%- @zone[:CNAME].each do |cname, name| %>
+<%= "#{cname} CNAME #{name}" %>
+<%- end %>

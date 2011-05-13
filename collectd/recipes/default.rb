@@ -17,9 +17,19 @@
 # limitations under the License.
 #
 
+
 package "collectd" do
-  package_name "collectd-core"
+  case node[:platform]
+  when "ubuntu"
+    package_name "collectd-core"
+  when "debian"
+    package_name "collectd"
+  end
 end
+
+# package "collectd" do
+#   package_name "collectd-core"
+# end
 
 service "collectd" do
   supports :restart => true, :status => true

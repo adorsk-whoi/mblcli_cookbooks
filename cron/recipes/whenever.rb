@@ -1,8 +1,9 @@
 #
 # Cookbook Name:: cron
-# Recipe:: default
+# Recipe:: whenever
 #
-# Copyright 2010, Opscode, Inc.
+# Author: Anthony Goddard (<agoddard@mbl.edu>)
+# Copyright 2011, Woods Hole Marine Biological Laboratory.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -36,7 +37,7 @@ directory "/etc/cron.whenever" do
 end
 
 # not quite ready for primetime
-# TODO write user specific files
+# TODO write user specific files 
 template "/etc/cron.whenever/whenever.rb" do
   source "whenever_cron.erb"
   group "root"
@@ -46,6 +47,12 @@ template "/etc/cron.whenever/whenever.rb" do
   # notifies :restart, resources(:service => "apache2")
 end
 
+ruby "write_cron" do
+  user "root"
+  cwd "whenever -i -f /etc/cron.whenever/whenever.rb"
+end
+
 
 #TODO
 # command: whenever -u @user -i -f whenever.rb
+# splay-ish

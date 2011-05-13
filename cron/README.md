@@ -12,6 +12,7 @@ LICENSE AND AUTHOR
 ==================
 
 Author:: Joshua Timberman (<joshua@opscode.com>)
+Author:: Anthony Goddard (<agoddard@mbl.edu>)
 
 Copyright 2010, Opscode, Inc.
 
