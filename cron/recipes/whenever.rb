@@ -26,8 +26,6 @@ gem_package "whenever" do
   action :install
 end
 
-
-
 # Make sure cron directory exists
 directory "/etc/cron.whenever" do
   owner "root"
@@ -36,23 +34,41 @@ directory "/etc/cron.whenever" do
   action :create
 end
 
-# not quite ready for primetime
-# TODO write user specific files 
-template "/etc/cron.whenever/whenever.rb" do
-  source "whenever_cron.erb"
-  group "root"
-  owner "root"
-  variables :cron => node[:cron]
-  mode 0644
-  # notifies :restart, resources(:service => "apache2")
+
+def sanitize_every(every)
+  if every.include? " "
+    every.split.join('.') 
+  else
+    ":#{every}"
+  end
 end
 
-ruby "write_cron" do
-  user "root"
-  cwd "whenever -i -f /etc/cron.whenever/whenever.rb"
+
+node[:cron][:tasks].each_with_index do |task, index|
+  
+  #ya, we need to get these defaults in a non-insane fashion..
+  every = node[:cron][:tasks][index][:every] || node[:cron][:task][:every]
+  every = sanitize_every(every)
+  at = task[:at] || node[:cron][:task][:at]
+  user = task[:user] || node[:cron][:task][:user]
+  
+  filename = "/tmp/schedule_#{index}.rb"
+  
+  template filename do
+    source "whenever_cron.erb"
+    group "root"
+    owner "root"
+    variables(:task => task[:command], :every => every, :at => at)
+    mode 0644
+  end
+
+  bash "write_cron" do
+    user "root"
+    cwd "/tmp"
+    code "whenever -i -u #{user} -f #{filename}"
+  end
 end
 
 
 #TODO
-# command: whenever -u @user -i -f whenever.rb
 # splay-ish
