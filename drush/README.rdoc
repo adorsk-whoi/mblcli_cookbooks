@@ -1,0 +1,16 @@
+= DESCRIPTION:
+
+Installs and configures Drush.
+
+= REQUIREMENTS:
+
+PHP, PHP CLI.
+
+== Platform:
+
+== Cookbooks:
+
+= ATTRIBUTES:
+
+= USAGE:
+
