@@ -6,6 +6,6 @@ long_description IO.read(File.join(File.dirname(__FILE__), 'README.rdoc'))
 version          "0.0.1"
 
 
-%w{apache2 mysql apt drush}.each do |cb|
+%w{apache2 mysql git apt drush}.each do |cb|
   depends cb
 end
