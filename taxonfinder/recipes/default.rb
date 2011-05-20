@@ -29,6 +29,7 @@ remote_file "#{node[:taxonfinder][:dir]}/taxon-finder.tar.gz" do
   source "#{node[:taxonfinder][:src]}"
   mode "0644"
   checksum node[:taxonfinder][:checksum]
+  action :create_if_missing
 end
 
 execute "untar-taxonfinder" do

@@ -1,17 +1,3 @@
-<%- def sanitize_every(every)
-  every ||= @cron[:every] #sets every to default unless defined
-  
-  if every.include? " "
-    every.tr(' ', '.') #using . syntax like 2.days
-  else
-    %("#{every}") #return a quoted string like '"day"'
-  end
+every <%= @every %><% if @at %>, :at => "<%= @at %>"<% end %> do
+  command %(<%= @task %>)
 end
-%>
-<%- @cron[:tasks].each do |task| %>
-every <%= sanitize_every(task[:every]) %><% if task[:at] %>, :at => '<%= task[:at] %>'<% end %> do
-  <%- if task[:command] %>
-    command %(<%= task[:command] %>)
-  <%- end %>
-end
-<%- end %>

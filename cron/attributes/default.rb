@@ -5,5 +5,5 @@
 # default[:cron][:runner] = ""
 # default[:cron][:command] = ""
 
-default[:cron][:tasks] = []
-default[:cron][:every] = "day"
+default[:cron][:task][:every] = "day"
+default[:cron][:task][:user]  = "root"

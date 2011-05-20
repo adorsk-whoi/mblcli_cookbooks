@@ -17,7 +17,19 @@
 # limitations under the License.
 #
 
-package "vim"
+# package "vim"
+
+
+
+p = package "vim" do
+  package_name value_for_platform(
+    [ "centos", "fedora"] => { "default" => "vim-common" },
+    "default" => "vim"
+  )
+  action :nothing
+end
+
+p.run_action(:install)
 
 node[:vim][:extra_packages].each do |vimpkg|
   package vimpkg

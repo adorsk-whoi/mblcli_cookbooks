@@ -1,0 +1,12 @@
+= DESCRIPTION:
+
+This cookbook sets up the aegir hosting system.
+
+It assumes that drush has already been installed.
+
+= REQUIREMENTS:
+
+= ATTRIBUTES:
+
+= USAGE:
+
