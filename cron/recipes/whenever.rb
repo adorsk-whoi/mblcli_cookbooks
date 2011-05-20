@@ -44,13 +44,13 @@ def sanitize_every(every)
 end
 
 
-node[:cron][:tasks].each_with_index do |task, index|
+node[:cron][:tasks].each_with_index do |cron_task, index|
   
   #ya, we need to get these defaults in a non-insane fashion..
   every = node[:cron][:tasks][index][:every] || node[:cron][:task][:every]
   every = sanitize_every(every)
-  at = task[:at] || node[:cron][:task][:at]
-  user = task[:user] || node[:cron][:task][:user]
+  at = cron_task[:at]
+  user = cron_task[:user] || node[:cron][:task][:user]
   
   filename = "/tmp/schedule_#{index}.rb"
   
