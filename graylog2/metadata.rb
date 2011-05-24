@@ -9,6 +9,11 @@ recipe            "graylog2", "Installs and configures Graylog2"
   supports os
 end
 
+%w{ git }.each do |cb|
+  depends cb
+end
+
+
 %w{ apt apache2 }.each do |pkg|
   depends pkg
 end
