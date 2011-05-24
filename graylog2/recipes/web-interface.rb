@@ -22,7 +22,7 @@ include_recipe "graylog2::default"
 
 # Ensure bundler is available
 gem_package "bundler" do
-  # version "1.0.3"  # Put in for our infrastructure requirements at MDSOL #move to environment?
+  version "1.0.3"  # Put in for our infrastructure requirements at MDSOL
   action :install
 end
 
@@ -32,7 +32,7 @@ gem_package "rake" do
 end
 
 # Install required apt packages
-%w{ build-essential make rrdtool rake libopenssl-ruby libmysqlclient-dev ruby-dev postfix mysql-server }.each do |pkg|
+%w{ build-essential make rrdtool rake libopenssl-ruby ruby-dev postfix }.each do |pkg|
   package pkg do
     action :install
   end
@@ -75,8 +75,18 @@ execute "webui_bundle" do
   subscribes :run, resources(:link => "graylog2_webui"), :immediately
 end
 
+cron "Graylog2 send stream alarms" do
+  minute "*/15"
+  command "cd #{node[:graylog2][:basedir]}/web && RAILS_ENV=production bundle exec rake streamalarms:send"
+end
+
+cron "Graylog2 send subscriptions" do
+  minute "*/15"
+  command "cd #{node[:graylog2][:basedir]}/web && RAILS_ENV=production bundle exec rake subscriptions:send"
+end
+
 # Create rails app configs
-%w{ database general }.each do |conf|
+%w{ mongoid general }.each do |conf|
   template "webui_#{conf}_config" do
     path "#{node[:graylog2][:basedir]}/web/config/#{conf}.yml"
     source "#{conf}.yml.erb"
@@ -84,22 +94,6 @@ end
     group "nogroup"
     mode 0644
   end
-end
-
-# Perform rake db:create
-execute "webui_rake_dbcreate" do
-  cwd "#{node[:graylog2][:basedir]}/web"
-  command "rake db:create RAILS_ENV=production"
-  action :nothing
-  subscribes :run, resources(:template => ["webui_database_config", "webui_general_config"]), :immediately
-end
-
-# Perform rake db:migrate
-execute "webui_rake_dbmigrate" do
-  cwd "#{node[:graylog2][:basedir]}/web"
-  command "rake db:migrate RAILS_ENV=production"
-  action :nothing
-  subscribes :run, resources(:execute => "webui_rake_dbcreate"), :immediately
 end
 
 # Chown the graylog2 directory to nobody/nogroup to allow web servers to serve it
