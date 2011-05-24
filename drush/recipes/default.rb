@@ -22,26 +22,26 @@ remote_file "#{tmp_drush_file}" do
   mode "0644"
   checksum node[:drush][:checksum]
   not_if "#{drush_test_command}"
-  notifies :run, "execute[untar drush]"
+  notifies :run, "execute[untar drush]", :immediately
 end
 
 execute "untar drush" do
   cwd node[:drush][:dir]
   command "tar --strip-components 1 -xzf #{tmp_drush_file}"
-  notifies :run, "execute[rm tmp drush file]"
+  notifies :run, "execute[rm tmp drush file]", :immediately
   action :nothing
 end
 
 execute "rm tmp drush file" do
   command "rm #{tmp_drush_file}"
-  notifies :create, "link[/usr/local/bin/drush]"
+  notifies :create, "link[/usr/local/bin/drush]", :immediately
   action :nothing
 end
 
 link "/usr/local/bin/drush" do
   to "#{node[:drush][:dir]}/drush"
   action :nothing
-  notifies :run, "execute[test drush]"
+  notifies :run, "execute[test drush]", :immediately
 end
 
 
