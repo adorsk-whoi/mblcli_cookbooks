@@ -2,7 +2,16 @@
 # Cookbook Name:: backup
 # Recipe:: default
 #
-# Copyright 2011, Anthony Goddard
-#
-# All rights reserved - Do Not Redistribute
-#
+# Main backup recipe.
+
+# Include dependencies.
+include_recipe %w{}
+
+# Write the backup config file.
+template "#{node[:backup][:config]}" do
+  owner "root"
+  group "root"
+  mode "0750"
+  variables(:jobs => node[:backup][:jobs])
+  action :create
+end

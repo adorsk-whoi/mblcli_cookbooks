@@ -1,6 +1,10 @@
-maintainer       "YOUR_COMPANY_NAME"
-maintainer_email "YOUR_EMAIL"
+maintainer       "adorsk-whoi"
+maintainer_email "adorsk@whoi.edu"
 license          "All rights reserved"
-description      "Installs/Configures backup"
+description      "Runs backups."
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.rdoc'))
 version          "0.0.1"
+
+%w{}.each do |cb|
+  depends cb
+end
