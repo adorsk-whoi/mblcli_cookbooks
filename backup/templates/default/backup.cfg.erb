@@ -12,10 +12,11 @@ Backup::Model.new(:<%= job_name %>, '<%= job[:description] %>') do
     
   # Destinations
   <%- job[:destinations].each do | destination, config| %>
-    store_with <%= destination %> do | destination |
-      <% config.each do |key,values| %>
-        <%= "destination.#{key} = #{value}" %>
-        # TODO Add config loop for values
+    store_with <%= destination %> do | <%= destination.downcase %> |
+      <% config.each do |k,cfg| %>
+      <% cfg.each do |key,value| %>
+        <%= "#{destination.downcase}.#{key} = #{value}" %>
+        <%- end%>
       <%- end %>     
     <%- end %>
   end
