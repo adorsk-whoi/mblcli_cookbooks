@@ -2,6 +2,9 @@
 # Cookbook Name:: drush
 # Recipe:: default
 
+# Include dependencies.
+include_recipe %w{php}
+
 drush_file_url = "#{node[:drush][:base_url]}#{node[:drush][:version]}.tar.gz"
 tmp_drush_file = "/tmp/drush.tar.gz"
 
@@ -17,10 +20,8 @@ end
 
 # Only download drush if we don't have the appropriate version installed.
 # Triggers subsequent drush installation commands.
-remote_file "#{tmp_drush_file}" do
-  source drush_file_url
-  mode "0644"
-  checksum node[:drush][:checksum]
+execute "download drush" do
+  command "wget #{drush_file_url} -O #{tmp_drush_file}"
   not_if "#{drush_test_command}"
   notifies :run, "execute[untar drush]", :immediately
 end
