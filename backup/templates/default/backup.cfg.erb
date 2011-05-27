@@ -1,0 +1,22 @@
+<%- @jobs.each do |job_name,job| %>
+Backup::Model.new(:<%= job_name %>, '<%= job[:description] %>') do
+  # Sources
+  <%- job[:file_tasks].each do |file_task,config| %>
+    
+    archive :<%= file_task %> do |archive|
+       <% config[:includes].each do |path| %>archive.add '<%= path %>'<% end %>
+       <% config[:excludes].each do |path| %>archive.exclude '<%= path %>'<% end %>
+     end
+    
+    <%- end %>
+    
+  # Destinations
+  <%- job[:destinations].each do | destination, config| %>
+    store_with <%= destination %> do | destination |
+      <% config.each do |key,values| %>
+        <%= "destination.#{key} = #{value}" %>
+        # TODO Add config loop for values
+      <%- end %>     
+    <%- end %>
+  end
+<%- end %>

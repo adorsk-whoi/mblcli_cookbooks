@@ -3,4 +3,4 @@
 # Attributes:: backup
 #
 
-set[:backup][:config_dir] = "/data/backups/configs"
+set[:backup][:config] = "/etc/backup.cfg"

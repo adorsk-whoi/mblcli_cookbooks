@@ -12,6 +12,6 @@ template "#{node[:backup][:config]}" do
   owner "root"
   group "root"
   mode "0750"
-  content rendered_trigger
+  variables(:jobs => node[:backup][:jobs])
   action :create
 end
