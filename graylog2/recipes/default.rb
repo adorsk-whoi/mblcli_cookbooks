@@ -17,6 +17,8 @@
 # limitations under the License.
 #
 
+include_recipe "git"
+
 # Add apt public key for mongodb repo
 execute "get_mongodb_pubkey" do
   command "apt-key adv --keyserver keyserver.ubuntu.com --recv 7F0CEB10"

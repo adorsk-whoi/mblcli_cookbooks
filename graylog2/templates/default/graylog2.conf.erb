@@ -4,8 +4,8 @@
 #   - Graylog2 configuration file
 
 # On which port (UDP) should we listen for Syslog messages? (Standard: 514)
-syslog_listen_port = <%= node[:graylog2][:port] %>
-syslog_protocol = <%= node[:graylog2][:protocol] %>
+syslog_listen_port = 514
+syslog_protocol = tcp
 
 # MongoDB Configuration
 mongodb_useauth = false
