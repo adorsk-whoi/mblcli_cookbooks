@@ -4,8 +4,9 @@
 #
 # Main backup recipe.
 
-# Include dependencies.
-include_recipe %w{}
+gem_package "backup" do
+  action :install
+end
 
 # Write the backup config file.
 template "#{node[:backup][:config]}" do
@@ -14,4 +15,5 @@ template "#{node[:backup][:config]}" do
   mode "0750"
   variables(:jobs => node[:backup][:jobs])
   action :create
+  not_if {node[:backup][:jobs].nil?}
 end

@@ -4,17 +4,22 @@ Backup::Model.new(:<%= job_name %>, '<%= job[:description] %>') do
   # Sources
   # 
 
+  <%- unless job[:file_tasks].nil? %>
   # Files/Directories
-  <%- job[:file_tasks].each do |file_task,config| %>
+  
+    <%- job[:file_tasks].each do |file_task,config| %>
   archive :<%= file_task %> do |archive|
-    <% config[:includes].each do |path| %>archive.add '<%= path %>'<% end %>
-    <% config[:excludes].each do |path| %>archive.exclude '<%= path %>'<% end %>
+      <% config[:includes].each do |path| %>archive.add '<%= path %>'<% end %>
+      <% config[:excludes].each do |path| %>archive.exclude '<%= path %>'<% end %>
   end
     
+    <%- end %>
   <%- end %>
 
-  # Databases
 
+  <%- unless job[:database_tasks].nil? %>
+  # Databases
+  
   # MySQL Defaults
   Backup::Configuration::Database::MySQL.defaults do |db|
     db.username = "root"
@@ -27,17 +32,18 @@ Backup::Model.new(:<%= job_name %>, '<%= job[:description] %>') do
   end
 
 
-  <%- job[:database_tasks].each do |db_task, config| %>
+
+    <%- job[:database_tasks].each do |db_task, config| %>
   database <%= config[:type] %> do |db|
     db.name = '<%= config[:name] %>'
-    <% if ! config[:params].nil? %>
-      <% config[:params].each do |key,value| %>
-    <%= "db.#{key} = #{value}" %>
+      <% if ! config[:params].nil? %>
+        <% config[:params].each do |key,value| %>
+      <%= "db.#{key} = #{value}" %>
+        <%- end %>     
       <%- end %>     
-    <%- end %>     
   end
+    <%- end %>  
   <%- end %>
-
   
 
     
@@ -49,8 +55,7 @@ Backup::Model.new(:<%= job_name %>, '<%= job[:description] %>') do
     <% config[:params].each do |key,value| %>
     <%= "#{config[:type].downcase}.#{key} = #{value}" %>
     <%- end %>     
-  <%- end %>
   end
-<%- end %>
-
+  <%- end unless job[:destinations].nil? %>
 end
+<%- end %>
