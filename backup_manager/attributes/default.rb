@@ -3,4 +3,4 @@
 # Attributes:: backup_manager
 #
 
-default[:backup_manager][:foo] = "bar"
+default[:backup_manager][:backup_dir]} = "/data/backups"
