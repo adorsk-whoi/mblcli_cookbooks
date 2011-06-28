@@ -1,0 +1,14 @@
+= DESCRIPTION:
+
+Configures a node as a backup manager.
+
+= REQUIREMENTS:
+
+== Platform:
+
+== Cookbooks:
+
+= ATTRIBUTES:
+
+= USAGE:
+
