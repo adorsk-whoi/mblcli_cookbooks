@@ -8,7 +8,6 @@ gem_package "backup" do
   action :install
 end
 
-
 # Try to set the node's backup key attribute.
 begin
 
@@ -17,9 +16,13 @@ begin
   
   # Set the backup key attribute.
   node.set['backup']['key'] = backup_key
+
 rescue
 end
 
+
+##
+## @todo: do a search for all the nodes w/ runlist backup_manager who have the client node in its list of clients.  For each of those nodes, make a storage destination in the template.
 
 
 # Write the backup config file.

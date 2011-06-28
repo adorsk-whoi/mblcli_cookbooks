@@ -4,4 +4,4 @@
 #
 
 set[:backup][:config] = "/etc/backup.cfg"
-set[:backup][:key_file] = "~root/.ssh/id_dsa.pub"
+set[:backup][:key_file] = "/root/.ssh/id_dsa.pub"

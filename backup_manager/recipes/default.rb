@@ -3,21 +3,32 @@
 # Recipe:: default
 #
 
+# Make backups parent directory.
+directory "#{node[:backup_manager][:backup_dir]}" do
+  owner "root"
+  group "root"
+  mode "0755"
+  action :create
+  recursive true
+end
+
 # Get current list of backup clients to service.
-# PUT SEARCH STUFF HERE!
-clients = []
+clients = search(node[:backup_manager][:client_search_index], node[:backup_manager][:client_search_query])
 
 # Get old list of backup clients we service from node attributes.
-# GET OLD LIST HERE!!!
+old_client_list = []
+if node[:backup_manager].attribute?("clients")
+  old_client_list = node[:backup_manager][:clients]
+end
 
 # Remove clients which are not in the current list.
 # REMOVE DEFUNCT CLIENTS HERE!
 
-# For each client in the current list...
+# For each node in the current list...
 clients.each do |client|
   
   # Use first 32 characters of client's name as the username.
-  client_name = ""
+  client_name = client.name
   user_name = "%.32s" % client_name
 
   # Generate the path of the client's storage folder
@@ -48,11 +59,14 @@ clients.each do |client|
 
   # Add the client's backup key to the user's authorized_keys file.
   keys_file = "#{storage_folder}/.ssh/authorized_keys"
-  client_key = "" # Get client's key here.
+  client_key = ""
+  if client.attribute?('backup') && client[:backup].attribute?('key')
+    client_key = client[:backup][:key]
+  end
 
   execute "add key for #{client_name}" do
     command "echo '#{client_key}' >> #{keys_file}; chown #{user_name}:#{user_name} #{keys_file}; chmod 700 #{keys_file}"
-    only_if "test -f #{keys_file} && grep -q -v '#{client_key}' #{keys_file}"
+    only_if "! test -f #{keys_file} || grep -q -v '#{client_key}' #{keys_file}"
   end
 
 end
