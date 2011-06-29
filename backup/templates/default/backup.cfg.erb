@@ -1,23 +1,23 @@
 <%- @jobs.each do |job_name,job| %>
-Backup::Model.new(:<%= job_name %>, '<%= job[:description] %>') do
+Backup::Model.new(:<%= job_name %>, '<%= job["description"] %>') do
   #                      
   # Sources
   # 
 
-  <%- unless job[:file_tasks].nil? %>
+  <%- unless job["file_tasks"].nil? %>
   # Files/Directories
   
-    <%- job[:file_tasks].each do |file_task,config| %>
-  archive :<%= file_task %> do |archive|
-      <% config[:includes].each do |path| %>archive.add '<%= path %>'<% end %>
-      <% config[:excludes].each do |path| %>archive.exclude '<%= path %>'<% end %>
+    <%- job["file_tasks"].each do |task_name,config| %>
+  archive :<%= task_name %> do |archive|
+      <% config["includes"].each do |path| %>archive.add '<%= path %>'<% end %>
+      <% config["excludes"].each do |path| %>archive.exclude '<%= path %>'<% end %>
   end
     
     <%- end %>
   <%- end %>
 
 
-  <%- unless job[:database_tasks].nil? %>
+  <%- unless job["database_tasks"].nil? %>
   # Databases
   
   # MySQL Defaults
@@ -33,11 +33,11 @@ Backup::Model.new(:<%= job_name %>, '<%= job[:description] %>') do
 
 
 
-    <%- job[:database_tasks].each do |db_task, config| %>
-  database <%= config[:type] %> do |db|
-    db.name = '<%= config[:name] %>'
-      <% if ! config[:params].nil? %>
-        <% config[:params].each do |key,value| %>
+    <%- job["database_tasks"].each do |task_name, config| %>
+  database <%= config["type"] %> do |db|
+    db.name = '<%= config["name"] %>'
+      <% if ! config["params"].nil? %>
+        <% config["params"].each do |key,value| %>
       <%= "db.#{key} = #{value}" %>
         <%- end %>     
       <%- end %>     
@@ -50,12 +50,12 @@ Backup::Model.new(:<%= job_name %>, '<%= job[:description] %>') do
   #
   # Destinations
   #
-  <%- job[:destinations].each do | destination, config| %>
-  store_with <%= config[:type] %> do | <%= config[:type].downcase %> |
-    <% config[:params].each do |key,value| %>
-    <%= "#{config[:type].downcase}.#{key} = #{value}" %>
+  <%- job["destinations"].each do | destination, config| %>
+  store_with <%= config["type"] %> do | <%= config["type"].downcase %> |
+    <% config["params"].each do |key,value| %>
+    <%= "#{config["type"].downcase}.#{key} = #{value}" %>
     <%- end %>     
   end
-  <%- end unless job[:destinations].nil? %>
+  <%- end unless job["destinations"].nil? %>
 end
 <%- end %>

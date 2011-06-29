@@ -3,5 +3,6 @@
 # Attributes:: backup
 #
 
-set[:backup][:config] = "/etc/backup.cfg"
-set[:backup][:key_file] = "/root/.ssh/id_dsa.pub"
+default[:backup][:config] = "/etc/backup.cfg"
+default[:backup][:key_file] = "/root/.ssh/id_dsa.pub"
+default[:backup][:default_destinations] = {}
