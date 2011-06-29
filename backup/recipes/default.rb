@@ -4,9 +4,9 @@
 #
 # Main backup recipe.
 
-#gem_package "backup" do
-#  action :install
-#end
+gem_package "backup" do
+  action :install
+end
 
 # Try to set the node's backup key attribute.
 begin
