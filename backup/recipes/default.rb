@@ -34,35 +34,27 @@ node[:backup][:jobs].each do |job_name, job|
 
   # Process job destinations.
   destinations = {}
-  processed_destinations = {}
 
-  # if destinations is 'default', use node defaults.
+  # If destinations is 'default', use node defaults.
   if job[:destinations] == 'default'
     destinations = node["backup"]["default_destinations"].to_hash
+
+  # Otherwise if destinations has the key 'from_databag', get destinations from a databag.
+  elsif job[:destinations].has_key?('from_databag')
+    bag_name = job[:destinations][:from_databag]
+    bag = data_bag(job[:destinations][:from_databag])
+
+    bag.each do |item_name|
+      destinations[item_name] = data_bag_item(bag_name, item_name)
+    end
+
+  # Otherwise get destinations from inline definitions.
   else
     destinations = job["destinations"].to_hash
   end
-  
-  # Process individual destinations...
-  destinations.each do | destination_name, destination|
 
-    puts "\n\nyo! #{destination_name}\n\n"
-
-    # Handle different sources of destination configs.
-    case destination["config_source"]
-      
-    # inline: destination config is inline.
-    when "inline"
-      processed_destinations[destination_name] = destination["config"]
-
-    # attribute: get attributes from node attributes by evaluating a string e.g. 'node[:destinations][:dest1]'
-    when "attribute"
-      processed_destinations[destination_name] = eval(destination["attribute_string"])
-
-    end
-  end unless destinations.nil?
-
-  processed_job["destinations"] = processed_destinations
+  # Save destinations to processed job.
+  processed_job["destinations"] = destinations
 
   # Save the processed job.
   processed_jobs[job_name] = processed_job

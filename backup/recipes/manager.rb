@@ -4,7 +4,7 @@
 #
 
 # Make backups parent directory.
-directory "#{node[:backup_manager][:backup_dir]}" do
+directory "#{node[:backup][:manager][:backup_dir]}" do
   owner "root"
   group "root"
   mode "0755"
@@ -13,12 +13,12 @@ directory "#{node[:backup_manager][:backup_dir]}" do
 end
 
 # Get current list of backup clients to service.
-clients = search(node[:backup_manager][:client_search_index], node[:backup_manager][:client_search_query])
+clients = search(node[:backup][:manager][:client_search_index], node[:backup][:manager][:client_search_query])
 
 # Get old list of backup clients we service from node attributes.
 old_client_list = []
-if node[:backup_manager].attribute?("clients")
-  old_client_list = node[:backup_manager][:clients]
+if node[:backup][:manager].attribute?("clients")
+  old_client_list = node[:backup][:manager][:clients]
 end
 
 # Remove clients which are not in the current list.
@@ -32,7 +32,7 @@ clients.each do |client|
   user_name = "%.32s" % client_name
 
   # Generate the path of the client's storage folder
-  storage_folder = "#{node[:backup_manager][:backup_dir]}/#{user_name}"
+  storage_folder = "#{node[:backup][:manager][:backup_dir]}/#{user_name}"
 
   # Make a user.
   user "#{user_name}" do
