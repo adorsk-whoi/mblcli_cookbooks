@@ -2,7 +2,7 @@
 # Cookbook Name:: backup
 # Recipe:: default
 #
-# Main backup recipe.
+# Backup client recipe.
 
 gem_package "backup" do
   action :install
@@ -21,10 +21,6 @@ rescue
 end
 
 
-##
-## @todo: could set destination by doing a search for all the nodes w/ runlist backup_manager who have the client node in its list of clients.  For each of those nodes, make a storage destination in the template.
-
-
 # Prepare job definitions for use in the template.
 processed_jobs = {}
 node[:backup][:jobs].each do |job_name, job|
@@ -34,6 +30,11 @@ node[:backup][:jobs].each do |job_name, job|
 
   # Process job destinations.
   destinations = {}
+
+  # If destinations is not set, set it to 'default'
+  if ! job.has_key?('destinations')
+    job[:destinations] = 'default'
+  end
 
   # If destinations is 'default', use node defaults.
   if job[:destinations] == 'default'
@@ -45,7 +46,8 @@ node[:backup][:jobs].each do |job_name, job|
     bag = data_bag(job[:destinations][:from_databag])
 
     bag.each do |item_name|
-      destinations[item_name] = data_bag_item(bag_name, item_name)
+      item = data_bag_item(bag_name, item_name)
+      destinations[item_name] = item
     end
 
   # Otherwise get destinations from inline definitions.
