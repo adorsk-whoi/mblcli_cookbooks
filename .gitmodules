@@ -1,0 +1,3 @@
+[submodule "postgresql"]
+	path = postgresql
+	url = git@github.com:mblcli-cookbooks/postgresql.git
