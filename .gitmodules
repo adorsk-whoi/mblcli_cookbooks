@@ -1,3 +1,9 @@
 [submodule "postgresql"]
 	path = postgresql
 	url = git@github.com:mblcli-cookbooks/postgresql.git
+[submodule "nginx"]
+	path = nginx
+	url = https://github.com/cookbooks/nginx.git
+[submodule "git"]
+	path = git
+	url = https://github.com/cookbooks/git.git
