@@ -8,19 +8,6 @@ gem_package "backup" do
   action :install
 end
 
-# Try to set the node's backup key attribute.
-begin
-
-  # Get the node's backup key.
-  backup_key = File.open(node[:backup][:key_file], "rb").read()
-  
-  # Set the backup key attribute.
-  node.set['backup']['key'] = backup_key
-
-rescue
-end
-
-
 # Prepare job definitions for use in the template.
 processed_jobs = {}
 node[:backup][:jobs].each do |job_name, job|

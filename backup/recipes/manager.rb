@@ -22,7 +22,7 @@ if node[:backup][:manager].attribute?("clients")
 end
 
 # Remove clients which are not in the current list.
-# REMOVE DEFUNCT CLIENTS HERE!
+# REMOVE DEFUNCT CLIENTS HERE?
 
 # For each node in the current list...
 clients.each do |client|
@@ -57,16 +57,31 @@ clients.each do |client|
     action :create
   end
 
-  # Add the client's backup key to the user's authorized_keys file.
+  # Set the path to the authorized_keys file
   keys_file = "#{storage_folder}/.ssh/authorized_keys"
-  client_key = ""
-  if client.attribute?('backup') && client[:backup].attribute?('key')
-    client_key = client[:backup][:key]
+
+  # Create authorized_keys file if it does not exist.
+  execute "create authorized_keys file for #{client_name}" do
+    command "touch #{keys_file}; chown #{user_name}:#{user_name} #{keys_file}; chmod 700 #{keys_file}"
+    only_if "! test -f #{keys_file}"
   end
 
-  execute "add key for #{client_name}" do
-    command "echo '#{client_key}' >> #{keys_file}; chown #{user_name}:#{user_name} #{keys_file}; chmod 700 #{keys_file}"
-    only_if "! test -f #{keys_file} || grep -q -v '#{client_key}' #{keys_file}"
+  # Add the client's root public keys to the user's authorized_keys file.
+  # Note: the public keys come from the client node's attributes.
+  client_key = ""
+  if client.attribute?('user_ssh_keys') && client[:user_ssh_keys].attribute?('root') && client[:user_ssh_keys][:root]
+
+    # For each key...
+    client[:user_ssh_keys][:root].each do |key_name, key|
+
+      # Add key if it is not in the authorized_keys file.
+      execute "add key #{key_name} for #{client_name}" do
+        command "echo '#{key}' >> #{keys_file}"
+        only_if "grep -q -v '#{key}' #{keys_file}"
+      end
+    
+    end
+
   end
 
 end
