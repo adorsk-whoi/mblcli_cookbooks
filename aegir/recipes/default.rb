@@ -7,7 +7,7 @@
 
 # Include required recipes.
 #include_recipe %w{apt mysql::server apache2 php php::mysql git drush drush::drush_make}
-include_recipe %w{apt mysql::server apache2 php php::mysql git drush drush::drush_make}
+include_recipe %w{apt mysql::server apache2 php php::mysql php::gd git drush drush::drush_make}
 
 # Install required packages.
 # @todo: separate recipes for these later?
