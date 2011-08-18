@@ -24,6 +24,9 @@ end
 # Remove clients which are not in the current list.
 # REMOVE DEFUNCT CLIENTS HERE?
 
+# Persist client list for the next run.
+node.set['backup']['manager']['clients'] = clients
+
 # For each node in the current list...
 clients.each do |client|
   
