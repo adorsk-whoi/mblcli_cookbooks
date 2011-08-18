@@ -1,8 +1,8 @@
 #
-# Cookbook Name:: cron
-# Recipe:: whenever
+# Cookbook Name:: whenever
+# Recipe:: default
 #
-# Author: Anthony Goddard (<agoddard@mbl.edu>)
+# Author: Anthony Goddard (<agoddard@mbl.edu>), modified by adorsk-whoi.
 # Copyright 2011, Woods Hole Marine Biological Laboratory.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,6 +18,7 @@
 # limitations under the License.
 #
 
+# Install gem dependencies.
 gem_package "i18n" do
   action :install
 end
@@ -26,7 +27,7 @@ gem_package "whenever" do
   action :install
 end
 
-# Make sure cron directory exists
+# Make sure cron directory exists for whenever
 directory "/etc/cron.whenever" do
   owner "root"
   group "root"
@@ -34,7 +35,7 @@ directory "/etc/cron.whenever" do
   action :create
 end
 
-
+# Helper function to santize the 'every' parameter.
 def sanitize_every(every)
   if every.include? " "
     every.split.join('.') 
@@ -43,32 +44,33 @@ def sanitize_every(every)
   end
 end
 
-
-node[:cron][:tasks].each_with_index do |cron_task, index|
+# Process each job attribute.
+node["whenever"]["jobs"].each do |id, job|
   
-  #ya, we need to get these defaults in a non-insane fashion..
-  every = node[:cron][:tasks][index][:every] || node[:cron][:task][:every]
+  # Get 'every' or use defaults.
+  every = job['every'] || node['whenever']['defaults']['every']
   every = sanitize_every(every)
-  at = cron_task[:at]
-  user = cron_task[:user] || node[:cron][:task][:user]
   
-  filename = "/tmp/schedule_#{index}.rb"
+  # Get 'at'.
+  at = job['at'] || node['whenever']['defaults']['at']
+
+  # Get 'user'.
+  user = job['user'] || node['whenever']['defaults']['user']
+
+  # Path to temporary whenever config file.
+  whenever_file = "/tmp/_whenever_#{id}.rb"
   
-  template filename do
-    source "whenever_cron.erb"
+  # Write temporary file.
+  template whenever_file do
+    source "whenever_job.erb"
     group "root"
     owner "root"
-    variables(:task => task[:command], :every => every, :at => at)
+    variables(:command => job['command'], :every => every, :at => at)
     mode 0644
   end
 
-  bash "write_cron" do
-    user "root"
-    cwd "/tmp"
-    code "whenever -i -u #{user} -f #{filename}"
+  # Generate cron jobs from the config file.
+  execute "whenever to cron" do
+    command "whenever -i -u #{user} -f #{whenever_file}"
   end
 end
-
-
-#TODO
-# splay-ish

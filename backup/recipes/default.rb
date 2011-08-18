@@ -35,7 +35,7 @@ node[:backup][:jobs].each do |job_name, job|
 
   # If destinations is 'default', use node defaults.
   if job[:destinations] == 'default'
-    destinations = node["backup"]["default_destinations"].to_hash
+    destinations = node["backup"]["defaults"]["destinations"].to_hash
 
   # Otherwise if destinations has the key 'from_databag', get destinations from a databag.
   elsif job[:destinations].has_key?('from_databag')
@@ -54,6 +54,36 @@ node[:backup][:jobs].each do |job_name, job|
 
   # Save destinations to processed job.
   processed_job["destinations"] = destinations
+
+  # If no frequency is set, use node defaults.
+  if ! job['frequency']
+    job['frequency'] = node["backup"]["defaults"]["frequency"]
+  end
+
+  # Create whenever jobs.  Job ids are prefixed w/ '_backup_#{job_name}_'.
+  job['frequency'].each do |f|
+
+    # Make frequency hashes for frequency keywords.
+    if f.class == String
+      if f == 'daily'
+        f = {"every" => "1 day"}
+      elsif f == 'weekly'
+        f = {"every" => "1 week"}
+      elsif f == 'monthly'
+        f = {"every" => "1 month"}
+      end
+    end
+
+    # Make whenever job from frequency hash
+    whenever_job "_backup_#{job_name}" do
+      every f['every']
+      at f['at'] || "4:20am"
+      user 'root'
+      command "backup perform --trigger #{job_name} --config-file #{node[:backup][:config]}"
+      action :create
+    end
+
+  end
 
   # Save the processed job.
   processed_jobs[job_name] = processed_job

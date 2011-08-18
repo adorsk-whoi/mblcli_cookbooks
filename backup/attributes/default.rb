@@ -4,7 +4,9 @@
 #
 
 default[:backup][:config] = "/etc/backup.cfg"
-default[:backup][:default_destinations] = {}
+
+default[:backup][:defaults][:destinations] = {}
+default[:backup][:defaults][:frequency] = ["daily"]
 
 default[:backup][:manager][:backup_dir] = "/data/backups"
 default[:backup][:manager][:client_search_index] = "node"
