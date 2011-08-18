@@ -3,6 +3,7 @@ def initialize(*args)
   @action = :create_if_missing
 end
 
+# Shared method for creating key.
 def create_key(options={})
 
   user = new_resource.user

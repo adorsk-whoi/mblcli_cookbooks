@@ -1,5 +1,5 @@
 #
-# Cookbook Name:: ssh_keys
+# Cookbook Name:: ssh_key
 # Attributes:: default
 #
 
