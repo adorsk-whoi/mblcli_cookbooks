@@ -60,7 +60,7 @@ def create_key(options={})
   # Otherwise check if key already exists.
   else
     execute "ssh-keygen #{private_key_file}" do
-      creates key_file
+      creates private_key_file
       command keygen_command
     end      
   end
