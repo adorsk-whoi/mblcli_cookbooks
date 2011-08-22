@@ -3,7 +3,7 @@
 # Attributes:: backup
 #
 
-default[:backup][:config] = "/etc/backup.cfg"
+default[:backup][:config_file] = "/etc/backup.cfg"
 
 default[:backup][:defaults][:destinations] = {}
 default[:backup][:defaults][:frequency] = ["daily"]

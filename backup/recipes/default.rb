@@ -79,7 +79,7 @@ node[:backup][:jobs].each do |job_name, job|
       every f['every']
       at f['at'] || "4:20am"
       user 'root'
-      command "backup perform --trigger #{job_name} --config-file #{node[:backup][:config]}"
+      command "backup perform --trigger #{job_name} --config-file #{node[:backup][:config_file]}"
       action :create
     end
 
@@ -91,7 +91,7 @@ node[:backup][:jobs].each do |job_name, job|
 end
 
 # Write the backup config file.
-template "#{node[:backup][:config]}" do
+template "#{node[:backup][:config_file]}" do
   owner "root"
   group "root"
   mode "0750"
