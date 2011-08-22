@@ -18,22 +18,7 @@
 # limitations under the License.
 #
 
-# Install gem dependencies.
-gem_package "i18n" do
-  action :install
-end
 
-gem_package "whenever" do
-  action :install
-end
-
-# Make sure cron directory exists for whenever
-directory "/etc/cron.whenever" do
-  owner "root"
-  group "root"
-  mode 0755
-  action :create
-end
 
 # Helper function to santize the 'every' parameter.
 def sanitize_every(every)
@@ -44,8 +29,43 @@ def sanitize_every(every)
   end
 end
 
+
+
+# Install gem dependencies.
+gem_package "i18n" do
+  action :install
+end
+
+gem_package "whenever" do
+  action :install
+end
+
+# Make sure directory exists for whenever config files.
+directory "#{node['whenever']['configs_dir']}" do
+  owner "root"
+  group "root"
+  mode 0755
+  recursive true
+  action :create
+end
+
+# Get list of existing whenever job files.
+existing_job_files = `find #{node['whenever']['configs_dir']} -type f`.map{|l| l.strip}
+
+# Remove defunct jobs which are not in the node attributes.
+existing_job_files.each do |job_file|
+
+  job_id = File.basename(job_file, File.extname(job_file))
+
+  if ! node['whenever']['jobs'][job_id]
+    execute "remove defunct whenever job '#{job_id}'" do
+      command "whenever -c -f #{job_file}; rm -f #{job_file}"
+    end    
+  end
+end
+
 # Process each job attribute.
-node["whenever"]["jobs"].each do |id, job|
+node["whenever"]["jobs"].each do |job_id, job|
   
   # Get 'every' or use defaults.
   every = job['every'] || node['whenever']['defaults']['every']
@@ -58,19 +78,21 @@ node["whenever"]["jobs"].each do |id, job|
   user = job['user'] || node['whenever']['defaults']['user']
 
   # Path to temporary whenever config file.
-  whenever_file = "/tmp/_whenever_#{id}.rb"
+  whenever_file = "#{node['whenever']['configs_dir']}/#{job_id}.rb"
   
-  # Write temporary file.
-  template whenever_file do
+  # Write job file and notify execution of whenever update command.
+  template "#{whenever_file}" do
     source "whenever_job.erb"
     group "root"
     owner "root"
     variables(:command => job['command'], :every => every, :at => at)
     mode 0644
+    notifies :run, "execute[update whenever job '#{job_id}']"
   end
 
-  # Generate cron jobs from the config file.
-  execute "whenever to cron" do
-    command "whenever -i -u #{user} -f #{whenever_file}"
+  # Update crontab from whenever job files.
+  execute "update whenever job '#{job_id}'" do
+    command "whenever -i -f #{whenever_file}"
+    action :nothing
   end
 end
