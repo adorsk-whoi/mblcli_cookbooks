@@ -30,7 +30,7 @@ end
 
 
 # Get list of existing backup job files.
-old_jobs = `find #{node['backup']['configs_dir']} -type f`.map{|l| File.basename(l.strip)}
+old_jobs = `find #{node['backup']['configs_dir']} -type f`.map{|file_name| File.basename(file_name.strip)}
 
 # Initialize hash of current job files (current per node's attributes).
 current_jobs = {}

@@ -117,13 +117,13 @@ end
 action :delete do
 
   # Remove corresponding whenever job.
-  whenever_job_name = _backup_get_whenever_job_name(new_resource.name)
+  whenever_job_name = _backup_job_get_whenever_job_name(new_resource.name)
   whenever_job "#{whenever_job_name}" do
     action :delete
   end
   
   # Remove job file.
-  job_file = _backup_get_job_file_name(new_resource.name)
+  job_file = _backup_job_get_job_file_name(new_resource.name)
   execute "remove defunct backup job file '#{new_resource.name}'" do      
     command "rm -f '#{job_file}'"
   end    
