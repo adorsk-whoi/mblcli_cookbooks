@@ -1,8 +1,3 @@
-def initialize(*args)
-  super
-  @action = :create
-end
-
 # Build whenever job object and set node attributes.
 action :create do
   
