@@ -18,19 +18,6 @@
 # limitations under the License.
 #
 
-
-
-# Helper function to santize the 'every' parameter.
-def sanitize_every(every)
-  if every.include? " "
-    every.split.join('.') 
-  else
-    ":#{every}"
-  end
-end
-
-
-
 # Install gem dependencies.
 gem_package "i18n" do
   action :install
@@ -50,63 +37,52 @@ directory "#{node['whenever']['configs_dir']}" do
 end
 
 # Get list of existing old whenever job files.
-old_job_files = `find #{node['whenever']['configs_dir']} -type f`.map{|l| l.strip}
+# Note that we extract both the job name and the user name from the file name to
+# use as the job key.
+old_jobs = `find #{node['whenever']['configs_dir']} -type f`.map do |job_file|
+  if File.basename(job_file) =~ /^__job:(.*)__user:(.*)$/
+    [$1,$2]
+  end
+end
 
 # Initialize hash of current job files (current per node's attributes).
-current_job_files = {}
+current_jobs = {}
 
 # Process each job attribute.
-node["whenever"]["jobs"].each do |job_id, job|
+node["whenever"]["jobs"].each do |job_name, job|
   
-  # Get 'every' or use defaults.
-  every = job['every'] || node['whenever']['defaults']['every']
-  every = sanitize_every(every)
-  
-  # Get 'at'.
-  at = job['at'] || node['whenever']['defaults']['at']
-
-  # Get 'user'.
-  user = job['user'] || node['whenever']['defaults']['user']
-
-  # Path to whenever schedule file that will be written or updated.
-  # Note: filename convention is '_job_job_id-_user_username'.  We use this convention
-  # in order to detect changes in job user attributes.
-  job_file = "#{node['whenever']['configs_dir']}/__job:#{job_id}__user:#{user}"
-  
-  # Write job file and notify execution of whenever update command.
-  template job_file do
-    source "whenever_job.erb"
-    group "root"
-    owner "root"
-    variables(:command => job['command'], :every => every, :at => at)
-    mode 0644
-    notifies :run, "execute[update whenever job '#{job_file}']"
+  # Create or update whenever job.
+  whenever_job "#{job_name}" do
+    description job["description"]
+    every job["every"]
+    at job["at"]
+    user job["user"]
+    command job["command"]
   end
 
-  # Update crontab from whenever job files.
-  execute "update whenever job '#{job_file}'" do
-    command "whenever -u #{user} -i -f '#{job_file}'"
-    action :nothing
-  end
+  # Get default user.
+  # Note: this is a bit kludgy...is there a cleaner way to do this so that we don't have
+  # the same code in a buncha places?
+  user = job["user"] || node['whenever']['defaults']['user']
 
-  # Save whenever file to hash of new job files.
-  current_job_files[job_file] = true
+  # Save job info to hash of new job files.
+  current_jobs[[job_name,user]] = true
 
 end
 
 
 # Remove old jobs which are not in current jobs.
-old_job_files.each do |job_file|
+old_jobs.each do |job_key|
 
-  if ! current_job_files[job_file]
+  if ! current_jobs[job_key]
 
-    # Extract the user and job_id from the job file name.
-    if File.basename(job_file) =~ /^__job:(.*)__user:(.*)$/
-      user = $2
-      execute "remove defunct whenever job '#{job_file}'" do
-        command "whenever -u '#{user}' -c -f '#{job_file}'; rm -f '#{job_file}'"
-      end    
+    job_name = job_key[0]
+    user = job_key[1]
+    whenever_job "#{job_name}" do
+      user user
+      action :delete
     end
 
   end
+
 end
