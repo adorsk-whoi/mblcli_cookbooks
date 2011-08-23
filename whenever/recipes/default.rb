@@ -85,7 +85,7 @@ node["whenever"]["jobs"].each do |job_id, job|
 
   # Update crontab from whenever job files.
   execute "update whenever job '#{whenever_file}'" do
-    command "whenever -u #{user} -i -f #{whenever_file}"
+    command "whenever -u #{user} -i -f '#{whenever_file}'"
     action :nothing
   end
 
@@ -104,7 +104,7 @@ old_job_files.each do |job_file|
     if File.basename(job_file) =~ /^__job:(.*)__user:(.*)$/
       user = $2
       execute "remove defunct whenever job '#{job_file}'" do
-        command "whenever -u #{user} -c -f #{job_file}; rm -f #{job_file}"
+        command "whenever -u '#{user}' -c -f '#{job_file}'; rm -f '#{job_file}'"
       end    
     end
 
