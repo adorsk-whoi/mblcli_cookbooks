@@ -71,26 +71,26 @@ node["whenever"]["jobs"].each do |job_id, job|
   # Path to whenever schedule file that will be written or updated.
   # Note: filename convention is '_job_job_id-_user_username'.  We use this convention
   # in order to detect changes in job user attributes.
-  whenever_file = "#{node['whenever']['configs_dir']}/__job:#{job_id}__user:#{user}"
+  job_file = "#{node['whenever']['configs_dir']}/__job:#{job_id}__user:#{user}"
   
   # Write job file and notify execution of whenever update command.
-  template whenever_file do
+  template job_file do
     source "whenever_job.erb"
     group "root"
     owner "root"
     variables(:command => job['command'], :every => every, :at => at)
     mode 0644
-    notifies :run, "execute[update whenever job '#{whenever_file}']"
+    notifies :run, "execute[update whenever job '#{job_file}']"
   end
 
   # Update crontab from whenever job files.
-  execute "update whenever job '#{whenever_file}'" do
-    command "whenever -u #{user} -i -f '#{whenever_file}'"
+  execute "update whenever job '#{job_file}'" do
+    command "whenever -u #{user} -i -f '#{job_file}'"
     action :nothing
   end
 
   # Save whenever file to hash of new job files.
-  current_job_files[whenever_file] = true
+  current_job_files[job_file] = true
 
 end
 

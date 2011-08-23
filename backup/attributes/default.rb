@@ -3,7 +3,9 @@
 # Attributes:: backup
 #
 
-default[:backup][:config_file] = "/etc/backup.cfg"
+default[:backup][:configs_dir] = "/data/backup_jobs"
+
+default[:backup][:jobs] = {}
 
 default[:backup][:defaults][:destinations] = {}
 default[:backup][:defaults][:frequency] = ["daily"]
