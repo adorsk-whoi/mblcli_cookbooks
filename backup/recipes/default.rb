@@ -20,74 +20,77 @@ end
 
 # Prepare job definitions for use in the template.
 processed_jobs = {}
-node[:backup][:jobs].each do |job_name, job|
-  
-  # Initialize processed job.
-  processed_job = job.to_hash
 
-  # Process job destinations.
-  destinations = {}
+if ! node[:backup][:jobs].nil?
+  node[:backup][:jobs].each do |job_name, job|
+    
+    # Initialize processed job.
+    processed_job = job.to_hash
 
-  # If destinations is not set, set it to 'default'
-  if ! job.has_key?('destinations')
-    job[:destinations] = 'default'
-  end
+    # Process job destinations.
+    destinations = {}
 
-  # If destinations is 'default', use node defaults.
-  if job[:destinations] == 'default'
-    destinations = node["backup"]["defaults"]["destinations"].to_hash
-
-  # Otherwise if destinations has the key 'from_databag', get destinations from a databag.
-  elsif job[:destinations].has_key?('from_databag')
-    bag_name = job[:destinations][:from_databag]
-    bag = data_bag(job[:destinations][:from_databag])
-
-    bag.each do |item_name|
-      item = data_bag_item(bag_name, item_name)
-      destinations[item_name] = item
+    # If destinations is not set, set it to 'default'
+    if ! job.has_key?('destinations')
+      job[:destinations] = 'default'
     end
 
-  # Otherwise get destinations from inline definitions.
-  else
-    destinations = job["destinations"].to_hash
-  end
+    # If destinations is 'default', use node defaults.
+    if job[:destinations] == 'default'
+      destinations = node["backup"]["defaults"]["destinations"].to_hash
 
-  # Save destinations to processed job.
-  processed_job["destinations"] = destinations
+      # Otherwise if destinations has the key 'from_databag', get destinations from a databag.
+    elsif job[:destinations].has_key?('from_databag')
+      bag_name = job[:destinations][:from_databag]
+      bag = data_bag(job[:destinations][:from_databag])
 
-  # If no frequency is set, use node defaults.
-  if ! job['frequency']
-    job['frequency'] = node["backup"]["defaults"]["frequency"]
-  end
-
-  # Create whenever jobs.  Job ids are prefixed w/ '_backup_#{job_name}_'.
-  job['frequency'].each do |f|
-
-    # Make frequency hashes for frequency keywords.
-    if f.class == String
-      if f == 'daily'
-        f = {"every" => "1 day"}
-      elsif f == 'weekly'
-        f = {"every" => "1 week"}
-      elsif f == 'monthly'
-        f = {"every" => "1 month"}
+      bag.each do |item_name|
+        item = data_bag_item(bag_name, item_name)
+        destinations[item_name] = item
       end
+
+      # Otherwise get destinations from inline definitions.
+    else
+      destinations = job["destinations"].to_hash
     end
 
-    # Make whenever job from frequency hash
-    whenever_job "_backup_#{job_name}" do
-      every f['every']
-      at f['at'] || "4:20am"
-      user 'root'
-      command "backup perform --trigger #{job_name} --config-file #{node[:backup][:config_file]}"
-      action :create
+    # Save destinations to processed job.
+    processed_job["destinations"] = destinations
+
+    # If no frequency is set, use node defaults.
+    if ! job['frequency']
+      job['frequency'] = node["backup"]["defaults"]["frequency"]
     end
+
+    # Create whenever jobs.  Job ids are prefixed w/ '_backup_#{job_name}_'.
+    job['frequency'].each do |f|
+
+      # Make frequency hashes for frequency keywords.
+      if f.class == String
+        if f == 'daily'
+          f = {"every" => "1 day"}
+        elsif f == 'weekly'
+          f = {"every" => "1 week"}
+        elsif f == 'monthly'
+          f = {"every" => "1 month"}
+        end
+      end
+
+      # Make whenever job from frequency hash
+      whenever_job "_backup_#{job_name}" do
+        every f['every']
+        at f['at'] || "4:20am"
+        user 'root'
+        command "backup perform --trigger #{job_name} --config-file #{node[:backup][:config_file]}"
+        action :create
+      end
+
+    end
+
+    # Save the processed job.
+    processed_jobs[job_name] = processed_job
 
   end
-
-  # Save the processed job.
-  processed_jobs[job_name] = processed_job
-
 end
 
 # Write the backup config file.

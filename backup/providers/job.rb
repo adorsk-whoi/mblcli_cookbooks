@@ -1,8 +1,3 @@
-def initialize(*args)
-  super
-  @action = :create
-end
-
 # Build backup job object and set node attributes.
 action :create do
   
