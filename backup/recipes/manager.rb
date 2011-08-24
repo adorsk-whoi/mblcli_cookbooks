@@ -72,15 +72,15 @@ clients.each do |client|
   # Add the client's root public keys to the user's authorized_keys file.
   # Note: the public keys come from the client node's attributes.
   client_key = ""
-  if client.attribute?('user_ssh_keys') && client[:user_ssh_keys].attribute?('root') && client[:user_ssh_keys][:root]
+  if client.attribute?('user_public_keys') && client[:user_public_keys].attribute?('root') && client[:user_public_keys][:root]
 
     # For each key...
     client[:user_public_keys][:root].each do |key_name, key|
 
       # Add key if it is not in the authorized_keys file.
       execute "add key #{key_name} for #{client_name}" do
-        command "echo '#{key}' >> #{keys_file}"
-        only_if "grep -q -v '#{key}' #{keys_file}"
+        command "echo '#{key}' >> #{authorized_keys_file}"
+        not_if "grep -q -v '#{key}' #{authorized_keys_file}"
       end
     
     end
