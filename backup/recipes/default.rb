@@ -2,19 +2,15 @@
 # Cookbook Name:: backup
 # Recipe:: default
 #
-# Backup client recipe and setup.
-
-include_recipe %w{ssh_key}
-
-# Setup ssh key for root if no key exists.
-ssh_key "root key" do
-  user "root"
-  type "dsa"
-  action :create_if_missing
-end
+# Backups setup.
 
 # Install the backup gem.
 gem_package "backup" do
+  action :install
+end
+
+# Install the scp gem.
+gem_package "net-scp" do
   action :install
 end
 
