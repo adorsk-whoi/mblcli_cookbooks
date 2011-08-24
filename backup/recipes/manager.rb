@@ -61,12 +61,12 @@ clients.each do |client|
   end
 
   # Set the path to the authorized_keys file
-  keys_file = "#{storage_folder}/.ssh/authorized_keys"
+  authorized_keys_file = "#{storage_folder}/.ssh/authorized_keys"
 
   # Create authorized_keys file if it does not exist.
   execute "create authorized_keys file for #{client_name}" do
-    command "touch #{keys_file}; chown #{user_name}:#{user_name} #{keys_file}; chmod 700 #{keys_file}"
-    only_if "! test -f #{keys_file}"
+    command "touch #{authorized_keys_file}; chown #{user_name}:#{user_name} #{authorized_keys_file}; chmod 700 #{authorized_keys_file}"
+    not_if "test -f #{authorized_keys_file}"
   end
 
   # Add the client's root public keys to the user's authorized_keys file.
@@ -75,7 +75,7 @@ clients.each do |client|
   if client.attribute?('user_ssh_keys') && client[:user_ssh_keys].attribute?('root') && client[:user_ssh_keys][:root]
 
     # For each key...
-    client[:user_ssh_keys][:root].each do |key_name, key|
+    client[:user_public_keys][:root].each do |key_name, key|
 
       # Add key if it is not in the authorized_keys file.
       execute "add key #{key_name} for #{client_name}" do
