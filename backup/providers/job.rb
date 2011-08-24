@@ -21,7 +21,7 @@ action :create do
   job["name"] = new_resource.name
 
   # Set description
-  job["description"] = new_resource.description || new_resource.name
+  job["description"] = new_resource.description
 
   # Set file tasks.
   job["file_tasks"] = new_resource.file_tasks
@@ -36,8 +36,16 @@ action :create do
   job["frequency"] = new_resource.frequency
 
 
+  # Update node's backup attributes with job object, keyed by job name.
+  # We do this here to preserve attributes as they were set originally, before
+  # jobs are processed.
+  node.set['backup']['jobs'][job['name']] = job
+
   # Initialize destinations object.
   destinations = {}
+
+  # Set defaults.
+  job["destinations"] ||= "default"
 
   # If destinations is 'default', use node defaults.
   if job["destinations"] == 'default'
@@ -58,7 +66,8 @@ action :create do
     destinations = job["destinations"].to_hash
   end
 
-  # Save processed destinations to job.
+
+  # Overwrite job destinations with processed destinations.
   job["destinations"] = destinations
 
   # If no frequency is set, use node defaults.
@@ -106,9 +115,6 @@ action :create do
     end
 
   end
-
-  # Update node's backup attributes with job object, keyed by job name.
-  node.set['backup']['jobs'][job['name']] = job
 
 end
 
